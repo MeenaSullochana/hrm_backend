@@ -10,6 +10,10 @@ exports.createCompany = async (data, user) => {
 
 
 // GET COMPANIES (Super Admin only)
+exports.getAllCompanies = async () => {
+  return await Company.find();
+};
+
 exports.getCompanies = async () => {
   return await Company.find();
 };

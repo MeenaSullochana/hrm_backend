@@ -1,6 +1,6 @@
 const router = require("express").Router();
 
-const auth = require("../middlewares/AuthMiddleware");
+const auth = require("../middlewares/authMiddleware");
 const checkPermission = require("../middlewares/checkPermission");
 const controller = require("../controllers/employeeController");
 const checkStatus = require("../middlewares/checkStatus");
@@ -22,7 +22,7 @@ router.post(
 router.get(
   "/",
   auth,checkStatus,
-  checkPermission("view_employee"),
+  checkPermission("get_employee"),
   controller.getEmployees
 );
 
@@ -49,5 +49,8 @@ router.delete(
   checkPermission("delete_employee"),
   controller.deleteEmployee
 );
+
+router.get("/super/employees", auth, controller.getAllEmployees);
+router.get("/super/admins", auth, controller.getAllAdmins);
 
 module.exports = router;

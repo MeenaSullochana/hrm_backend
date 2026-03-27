@@ -65,3 +65,19 @@ exports.deleteEmployee = async (id, loggedUser) => {
 };
 
 
+exports.getAllEmployeesSuperAdmin = async () => {
+  return await User.find({
+    type: "employee"
+  })
+  .populate("companyId", "name prefix")
+  .populate("roles");
+};
+
+exports.getAllAdminSuperAdmin = async () => {
+  return await User.find({
+    type: "admin"
+  })
+  .populate("companyId", "name prefix")
+  .populate("roles");
+};
+

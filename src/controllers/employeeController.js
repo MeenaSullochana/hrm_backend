@@ -77,3 +77,35 @@ exports.deleteEmployee = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+exports.getAllEmployees = async (req, res) => {
+  try {
+
+    if (req.user.type !== "super_admin") {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    const data = await service.getAllEmployeesSuperAdmin();
+
+    res.json({ status: true, data });
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.getAllAdmins = async (req, res) => {
+  try {
+
+    if (req.user.type !== "super_admin") {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    const data = await service.getAllAdminSuperAdmin();
+
+    res.json({ status: true, data });
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

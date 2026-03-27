@@ -4,7 +4,7 @@ const cors = require('cors');
 app.use(cors());
 
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true })); // 🔥 ADD THIS
 app.use(cors({
     origin: [
       'http://localhost:5173',   // React local
@@ -17,6 +17,8 @@ app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/roles", require("./routes/roleRoutes"));
 app.use("/api/employees", require("./routes/employeeRoutes"));
 app.use("/api/companies", require("./routes/companyRoutes"));
+app.use("/api/attendance", require("./routes/attendanceRoutes"));
+
 module.exports = app;
 
 

@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const checkPermission = require("../middlewares/checkPermission");
 
 const controller = require("../controllers/authController");
 

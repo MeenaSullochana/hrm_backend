@@ -18,10 +18,11 @@ const userSchema = new mongoose.Schema({
     enum: ["super_admin", "admin", "employee"],
     default: "employee"
   },
-  employeeCode: {
-    type: String,
-    unique: true
-  },
+employeeCode: {
+  type: String,
+  unique: true,
+  sparse: true
+},
   
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,

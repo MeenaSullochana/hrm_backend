@@ -4,6 +4,8 @@ const controller = require("../controllers/roleController");
 const auth  = require("../middlewares/authCheck");
 
 router.post("/", auth, checkPermission("create_role"), controller.createRole);
+router.get("/permission", auth, checkPermission("get_permission"), controller.getPermission);
+
 router.get("/", auth, checkPermission("get_role"),controller.getRoles);
 router.post("/assign",auth,checkPermission("assign_role"),controller.assignRole);
 module.exports = router; 

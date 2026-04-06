@@ -1,4 +1,6 @@
 const Role = require("../models/Role");
+const Permission = require("../models/Permission");
+
 const User = require("../models/User");
 
 // CREATE ROLE
@@ -56,4 +58,9 @@ exports.assignRoleToUser = async (userId, roleId, loggedUser) => {
   await user.save();
 
   return await user.populate("roles");
+};
+
+exports.getPermission = async (user) => {
+  return await Permission.find({
+  });
 };

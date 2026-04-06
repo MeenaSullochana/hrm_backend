@@ -139,3 +139,16 @@ exports.assignRole = async (req, res) => {
     });
   }
 };
+exports.getPermission = async (req, res) => {
+  try {
+    const permissions = await roleService.getPermission(req.user);
+
+    res.status(200).json({
+      status: true,
+      data: permissions
+    });
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

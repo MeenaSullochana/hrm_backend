@@ -20,7 +20,11 @@ const companySchema = new mongoose.Schema({
   status: {
     type: Boolean,
     default: true
-  }
+  },
+admin: {
+  type: Boolean,
+  default: false
+}
 
 }, { timestamps: true });
 

@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 // REGISTER ADMIN
 exports.registerAdmin = async (data) => {
-  const { name, email, password, companyId } = data;
+  const { name, email, password, companyId ,roles} = data;
 
   // check existing
   const existing = await User.findOne({ email });
@@ -19,6 +19,7 @@ exports.registerAdmin = async (data) => {
     email,
     password: hashedPassword,
     companyId,
+    roles,
     type: "admin"
   });
 

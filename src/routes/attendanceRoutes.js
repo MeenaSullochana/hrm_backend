@@ -1,6 +1,6 @@
 const router = require("express").Router();
 
-const auth = require("../middlewares/authMiddleware");
+const auth  = require("../middlewares/authCheck");
 const checkStatus = require("../middlewares/checkStatus");
 const checkPermission = require("../middlewares/checkPermission");
 const controller = require("../controllers/attendanceController");

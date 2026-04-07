@@ -98,3 +98,23 @@ exports.uploadAttendance = async (req, res) => {
     });
   }
 };
+exports.monthlyReport = async (req, res) => {
+    try {
+        let { month, year } = req.query;
+    const now = new Date();
+
+        // ✅ fallback to current month/year
+        month = month ? parseInt(month) : (now.getMonth() + 1);
+        year = year ? parseInt(year) : now.getFullYear();
+        const report = await service.getMonthlyReport(
+            req.user.id,
+            month,
+            year
+        );
+
+        res.json(report);
+
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};

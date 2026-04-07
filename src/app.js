@@ -18,6 +18,9 @@ app.use("/api/roles", require("./routes/roleRoutes"));
 app.use("/api/employees", require("./routes/employeeRoutes"));
 app.use("/api/companies", require("./routes/companyRoutes"));
 app.use("/api/attendance", require("./routes/attendanceRoutes"));
+app.use("/api/task", require("./routes/taskRoutes"));
+app.use("/api/notification", require("./routes/notificationRoutes"));
+app.use("/api/leave", require("./routes/leaveRoutes"));
 
 module.exports = app;
 

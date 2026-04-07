@@ -37,5 +37,9 @@ router.post(
   upload.single("file"),
   controller.uploadAttendance
 );
+router.get('/monthly-report',
+    auth,  checkPermission("attendance_report"),
 
+    controller.monthlyReport
+);
 module.exports = router;

@@ -1,6 +1,7 @@
 const Attendance = require("../models/attendance");
 const User = require("../models/User");
 const XLSX = require("xlsx");
+const moment = require('moment');
 
 // ✅ CHECK-IN
 exports.checkIn = async (data, user) => {
@@ -118,4 +119,46 @@ exports.uploadAttendance = async (filePath, user) => {
   }
 
   return await Attendance.insertMany(records);
+};
+exports.getMonthlyReport = async (employeeId, month, year) => {
+const cmonth =month;
+const cyear =year;
+
+    const startDate = moment(`${year}-${month}-01`).startOf('month').toDate();
+    const endDate = moment(startDate).endOf('month').toDate();
+
+    // fetch records
+    const records = await Attendance.find({
+        employeeId,
+        date: { $gte: startDate, $lte: endDate }
+    });
+
+    // total days in month
+    const totalDays = moment(startDate).daysInMonth();
+
+    // present days
+    const presentDays = records.filter(r => r.status === true).length;
+
+    // absent days
+    const absentDays = totalDays - presentDays;
+
+    // total working hours
+    let totalHours = 0;
+
+    records.forEach(r => {
+        if (r.checkIn && r.checkOut) {
+            const diff = moment(r.checkOut).diff(moment(r.checkIn), 'hours', true);
+            totalHours += diff;
+        }
+    });
+
+    return {
+        totalDays,
+        presentDays,
+        absentDays,
+        totalHours: totalHours.toFixed(2),
+        records,
+        cmonth,
+        cyear
+    };
 };

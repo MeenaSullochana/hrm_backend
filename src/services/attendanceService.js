@@ -152,6 +152,22 @@ const cyear =year;
         }
     });
 
+let totalSeconds = 0;
+
+records.forEach(r => {
+    if (r.checkIn && r.checkOut) {
+        const diff = moment(r.checkOut).diff(moment(r.checkIn), 'seconds'); // 👈 seconds
+        totalSeconds += diff;
+    }
+});
+
+// 👉 convert seconds → hrs, mins, secs
+const hours = Math.floor(totalSeconds / 3600);
+const minutes = Math.floor((totalSeconds % 3600) / 60);
+const seconds = totalSeconds % 60;
+
+const formattedTime = `${hours} hrs ${minutes} mins ${seconds} sec`;
+
     return {
         totalDays,
         presentDays,
@@ -159,6 +175,7 @@ const cyear =year;
         totalHours: totalHours.toFixed(2),
         records,
         cmonth,
-        cyear
+        cyear,
+        totalDuration : formattedTime 
     };
 };

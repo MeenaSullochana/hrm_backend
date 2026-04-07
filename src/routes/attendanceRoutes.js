@@ -11,13 +11,13 @@ const upload = multer({ dest: "uploads/" });
 // EMPLOYEE
 router.post(
     "/checkin",
-    auth,checkPermission("checkin"),
+    auth,
     checkStatus,
     upload.single("photo"),   // 🔥 ADD THIS
     controller.checkIn
   );
 
-  router.post("/checkout", auth, checkPermission("checkout"),checkStatus, controller.checkOut);
+  router.post("/checkout", auth, checkStatus, controller.checkOut);
 router.get("/me", auth, checkStatus, controller.myAttendance);
 
 // ADMIN

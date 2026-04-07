@@ -9,7 +9,7 @@ const attendanceSchema = new mongoose.Schema({
 
   employeeCode: String,
 
-  date: String, // YYYY-MM-DD
+  date: Date, // YYYY-MM-DD
 
   checkIn: Date,
   checkOut: Date,

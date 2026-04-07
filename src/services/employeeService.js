@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const { generateEmployeeCode } = require("../utils/employeeCodeGenerator");
+const SalaryStructure = require('../models/SalaryStructure');
 
 exports.createEmployee = async (data, loggedUser) => {
 
@@ -14,7 +15,7 @@ exports.createEmployee = async (data, loggedUser) => {
   // 🔥 use generator
   const employeeCode = await generateEmployeeCode(loggedUser.companyId);
   // return employeeCode;
-  return await User.create({
+  const employee  = await User.create({
     name,
     email,
     password: hash,
@@ -24,6 +25,22 @@ exports.createEmployee = async (data, loggedUser) => {
     createdBy: loggedUser._id,
     type: "employee"
   });
+    await SalaryStructure.create({
+    employeeId: employee._id,
+    companyId: loggedUser.companyId,
+
+    basic: data.basic || 0,
+    hra: data.hra || 0,
+    allowance: data.allowance || 0,
+
+    pf: data.pf || 0,
+    tax: data.tax || 0,
+
+    bonus: data.bonus || 0,
+    penalty: data.penalty || 0
+  });
+
+  return employee;
 };
 
 
@@ -48,11 +65,20 @@ exports.getEmployeeById = async (id, loggedUser) => {
 
 // UPDATE EMPLOYEE
 exports.updateEmployee = async (id, data, loggedUser) => {
-  return await User.findOneAndUpdate(
-    { _id: id, companyId: loggedUser.companyId },
-    data,
-    { new: true }
-  );
+
+    const updateData = { ...data };
+
+    if (data.password) {
+        updateData.password = await bcrypt.hash(data.password, 10);
+    } else {
+        delete updateData.password;
+    }
+
+    return await User.findOneAndUpdate(
+        { _id: id, companyId: loggedUser.companyId },
+        updateData,
+        { new: true }
+    );
 };
 
 

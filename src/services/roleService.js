@@ -14,12 +14,21 @@ exports.createRole = async (data, user) => {
 
 
 // GET ROLES
+// exports.getRoles = async (user) => {
+//   return await Role.find({
+//     companyId: user.companyId
+//   });
+// };
 exports.getRoles = async (user) => {
-  return await Role.find({
-    companyId: user.companyId
-  });
-};
+  let condition = {};
 
+  // If Super Admin -> get all roles
+  if (user.type !== "super_admin") {
+    condition.companyId = user.companyId;
+  }
+
+  return await Role.find(condition);
+};
 
 // UPDATE ROLE
 exports.updateRole = async (id, data, user) => {

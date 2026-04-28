@@ -24,21 +24,49 @@ exports.getRoles = async (user) => {
 // UPDATE ROLE
 exports.updateRole = async (id, data, user) => {
   return await Role.findOneAndUpdate(
-    { _id: id, companyId: user.companyId },
+    { _id: id },
     data,
     { new: true }
   );
 };
+// exports.updateRole = async (id, data, user) => {
+//         console.log(id);
+//     const role = await Role.findOne({
+//         _id: id
+       
+//     });
+
+//     if (!role) throw new Error("Role not found");
+
+//     role.name = data.name;
+//     role.permissions = data.permissions;
+   
+//     await role.save();
+
+//     return role;
+// };
 
 
 // DELETE ROLE
+// exports.deleteRole = async (id, user) => {
+//   return await Role.findOneAndDelete({
+//     _id: id,
+//   });
+// };
 exports.deleteRole = async (id, user) => {
-  return await Role.findOneAndDelete({
+  // 1. Delete role
+  const deletedRole = await Role.findOneAndDelete({
     _id: id,
-    companyId: user.companyId
   });
-};
 
+  // 2. Remove role id from users roles array
+  await User.updateMany(
+    { roles: id }, // users containing this role in array
+    { $pull: { roles: id } } // remove from array
+  );
+
+  return deletedRole;
+};
 
 
 // ASSIGN ROLE TO USER

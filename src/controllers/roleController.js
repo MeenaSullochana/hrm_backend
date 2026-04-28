@@ -54,7 +54,7 @@ exports.updateRole = async (req, res) => {
 
   try {
     const updated = await roleService.updateRole(
-      req.body.id,
+      req.params.id,
       req.body,
       req.user
     );
@@ -81,7 +81,7 @@ exports.updateRole = async (req, res) => {
 // DELETE ROLE
 exports.deleteRole = async (req, res) => {
   try {
-    const { id } = req.body;
+    const { id } =       req.params;
 
     if (!id) {
       return res.status(400).json({

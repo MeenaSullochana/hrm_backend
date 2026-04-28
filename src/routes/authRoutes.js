@@ -10,6 +10,8 @@ const {
 
 // REGISTER ADMIN
 router.post("/register", registerValidation, controller.registerAdmin);
+router.put("/admin/:id", controller.updateAdmin);
+// router.put("/admin-status/:id", controller.updateAdminStatus);
 
 // LOGIN
 router.post("/login", loginValidation, controller.login);

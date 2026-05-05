@@ -51,6 +51,6 @@ router.delete(
 );
 
 router.get("/super/employees", auth, controller.getAllEmployees);
-router.get("/super/admins", auth, controller.getAllAdmins);
+router.get("/super/admins", auth, checkPermission("get_admin"),controller.getAllAdmins);
 
 module.exports = router;

@@ -6,13 +6,13 @@ const taskSchema = new mongoose.Schema({
 
     assignedTo: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Employee',
+        ref: 'User',
         required: true
     },
 
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Admin', // multiple admin support
+        ref: 'User', // multiple admin support
         required: true
     },
 

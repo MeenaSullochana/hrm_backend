@@ -134,7 +134,7 @@ exports.deleteTask = async (taskId) => {
 
 
     const task = await Task.findOne({
-        _id: taskId,
+        _id: taskId
     });
     if (!task) {
         throw new Error("Task not found");

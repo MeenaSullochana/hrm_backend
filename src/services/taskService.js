@@ -142,8 +142,5 @@ exports.deleteTask = async (taskId) => {
 
     await Task.findByIdAndDelete(taskId);
 
-    return {
-        success: true,
-        message: "Task deleted successfully"
-    };
+  return true;
 };

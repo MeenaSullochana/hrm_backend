@@ -64,18 +64,15 @@ exports.deleteTask = async (req, res) => {
  const task = await taskService.deleteTask(
             req.params.id,
         );
-        const result = await taskService.deleteTask(taskId);
+        // const result = await taskService.deleteTask(taskId);
 
-        return res.status(200).json({
-            success: true,
-            message: result.message
-        });
+        res.json({
+            message: "Task deleted successfully"
+                    });
 
     } catch (error) {
 
-        return res.status(400).json({
-            success: false,
-            message: error.message
-        });
+                res.status(400).json({ message: error.message });
+
     }
 };

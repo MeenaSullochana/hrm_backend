@@ -8,7 +8,7 @@ exports.createTaskService = async (data, adminId) => {
         createdBy: adminId
     });
 
-    // 🔔 Create Notification
+    // 🔔 Create NotificationgetEmployeeTasks
     await Notification.create({
         employeeId: data.assignedTo,
         message: `New Task Assigned: ${data.title}`
@@ -19,8 +19,33 @@ exports.createTaskService = async (data, adminId) => {
 
 
 // employee tasks
+// exports.getEmployeeTasks = async (employeeId) => {
+
+//     return await Task.find({ assignedTo: employeeId }).sort({ createdAt: -1 });
+// };
 exports.getEmployeeTasks = async (employeeId) => {
-    return await Task.find({ assignedTo: employeeId }).sort({ createdAt: -1 });
+
+    // First check user table
+    const user = await User.findById(employeeId);
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    let tasks;
+
+    // If user is admin -> check createdBy
+    if (user.type === 'admin') {
+        tasks = await Task.find({ createdBy: employeeId })
+            .sort({ createdAt: -1 });
+    } 
+    // Otherwise -> check assignedTo
+    else {
+        tasks = await Task.find({ assignedTo: employeeId })
+            .sort({ createdAt: -1 });
+    }
+
+    return tasks;
 };
 
 // update status + remark

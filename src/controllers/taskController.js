@@ -16,7 +16,7 @@ exports.createTask = async (req, res) => {
     }
 };
 exports.getMyTasks = async (req, res) => {
-    try {
+    try {     
         const tasks = await taskService.getEmployeeTasks(req.user.id);
         res.json(tasks);
     } catch (err) {

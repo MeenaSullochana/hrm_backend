@@ -26,7 +26,7 @@ router.get('/view/:id',
     auth,checkPermission("view_task"),
     controller.viewTask
 );
-router.get('/delete/:id',
+router.delete('/delete/:id',
     auth,checkPermission("delete_task"),
     controller.deleteTask
 );

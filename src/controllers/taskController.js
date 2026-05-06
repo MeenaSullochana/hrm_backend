@@ -61,8 +61,9 @@ exports.viewTask = async (req, res) => {
 exports.deleteTask = async (req, res) => {
     try {
 
-        const { taskId } = req.params.id;
-
+ const task = await taskService.deleteTask(
+            req.params.id,
+        );
         const result = await taskService.deleteTask(taskId);
 
         return res.status(200).json({

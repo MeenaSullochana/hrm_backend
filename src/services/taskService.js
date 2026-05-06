@@ -1,4 +1,6 @@
 const Task = require('../models/Task');
+const User = require('../models/User');
+
 const Notification = require('../models/Notification');
 
 exports.createTaskService = async (data, adminId) => {
@@ -27,6 +29,7 @@ exports.getEmployeeTasks = async (employeeId) => {
 
     // First check user table
     const user = await User.findById(employeeId);
+
 
     if (!user) {
         throw new Error("User not found");

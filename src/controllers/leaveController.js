@@ -29,7 +29,7 @@ exports.viewLeave = async (req, res) => {
 
         res.json({
             message: "Leave get successfully",
-            task
+            leave
         });
 
     } catch (err) {

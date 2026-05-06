@@ -105,12 +105,12 @@ exports.deleteLeave = async (id, employeeId) => {
     });
 };
 
-exports.viewLeave= async (leaveid, employeeId) => {
-
-    const leave = await Leave.findOne({
-        _id: leaveid,
-    })
+exports.viewLeave= async (leaveid, employee11Id) => {
+    const leave = await Leave.findById(
+   leaveid
+   )
     .populate('employeeId'); // Employee details
+
     if (!leave) {
         throw new Error("Leave not found");
     }

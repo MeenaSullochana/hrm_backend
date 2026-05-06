@@ -23,7 +23,7 @@ router.put('/update/:id',
 checkPermission("update_leave"),     controller.updateLeave
 );
 
-router.put('/view/:id',
+router.get('/view/:id',
     auth,
 checkPermission("view_leave"),     controller.viewLeave
 );

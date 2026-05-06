@@ -7,11 +7,35 @@ exports.applyLeave = async (req, res) => {
 };
 
 // list
+// exports.getMyLeaves = async (req, res) => {
+//     const leaves = await leaveService.getMyLeaves(req.user.id);
+//     res.json(leaves);
+// };
 exports.getMyLeaves = async (req, res) => {
-    const leaves = await leaveService.getMyLeaves(req.user.id);
-    res.json(leaves);
+    try {     
+        const leaves = await leaveService.getMyLeaves(req.user.id);
+        res.json(leaves);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 };
 
+exports.viewLeave = async (req, res) => {
+    try {
+        const leave = await leaveService.viewLeave(
+            req.params.id,
+            req.user.id
+        );
+
+        res.json({
+            message: "Leave get successfully",
+            task
+        });
+
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
 // update
 exports.updateLeave = async (req, res) => {
     const leave = await leaveService.updateLeave(

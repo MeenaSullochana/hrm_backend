@@ -23,6 +23,11 @@ router.put('/update/:id',
 checkPermission("update_leave"),     controller.updateLeave
 );
 
+router.put('/view/:id',
+    auth,
+checkPermission("view_leave"),     controller.viewLeave
+);
+
 // delete
 router.delete('/delete/:id',
     auth,

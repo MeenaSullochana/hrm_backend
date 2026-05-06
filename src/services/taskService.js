@@ -132,8 +132,10 @@ exports.viewTask = async (taskId, employeeId) => {
 };
 exports.deleteTask = async (taskId) => {
 
-    const task = await Task.findById(taskId);
 
+    const task = await Task.findOne({
+        _id: taskId,
+    });
     if (!task) {
         throw new Error("Task not found");
     }

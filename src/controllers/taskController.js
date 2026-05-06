@@ -42,3 +42,39 @@ exports.updateTask = async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 };
+exports.viewTask = async (req, res) => {
+    try {
+        const task = await taskService.viewTask(
+            req.params.id,
+            req.user.id
+        );
+
+        res.json({
+            message: "Task get successfully",
+            task
+        });
+
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
+exports.deleteTask = async (req, res) => {
+    try {
+
+        const { taskId } = req.params.id;
+
+        const result = await taskService.deleteTask(taskId);
+
+        return res.status(200).json({
+            success: true,
+            message: result.message
+        });
+
+    } catch (error) {
+
+        return res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+};

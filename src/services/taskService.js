@@ -49,19 +49,96 @@ exports.getEmployeeTasks = async (employeeId) => {
 };
 
 // update status + remark
+// exports.updateTaskStatus = async (taskId, data, employeeId) => {
+
+//     const task = await Task.findOne({
+//         _id: taskId,
+//         assignedTo: employeeId
+//     });
+
+//     if (!task) throw new Error("Task not found");
+
+//     task.status = data.status;
+//     task.remark = data.remark;
+
+//     await task.save();
+
+//     return task;
+// };
+
 exports.updateTaskStatus = async (taskId, data, employeeId) => {
 
-    const task = await Task.findOne({
-        _id: taskId,
-        assignedTo: employeeId
-    });
+    // 🔍 Check user type
+    const user = await User.findById(employeeId);
 
-    if (!task) throw new Error("Task not found");
+    if (!user) {
+        throw new Error("User not found");
+    }
 
-    task.status = data.status;
-    task.remark = data.remark;
+    const task = await Task.findById(taskId);
+
+    if (!task) {
+        throw new Error("Task not found");
+    }
+
+    // ✅ EMPLOYEE
+    // Only update status & remark
+    if (user.type === 'employee') {
+
+        // Employee can update only own task
+        if (task.assignedTo.toString() !== employeeId.toString()) {
+            throw new Error("Unauthorized");
+        }
+
+        task.status = data.status || task.status;
+        task.remark = data.remark || task.remark;
+    }
+
+    // ✅ ADMIN
+    // Update all fields
+    else if (user.type === 'admin') {
+
+        task.title = data.title || task.title;
+        task.description = data.description || task.description;
+        task.assignedTo = data.assignedTo || task.assignedTo;
+        task.workType = data.workType || task.workType;
+        task.clientDetails = data.clientDetails || task.clientDetails;
+        task.status = data.status || task.status;
+        task.remark = data.remark || task.remark;
+        task.startDate = data.startDate || task.startDate;
+        task.endDate = data.endDate || task.endDate;
+    }
 
     await task.save();
 
     return task;
+};
+exports.viewTask = async (taskId, employeeId) => {
+
+    const task = await Task.findOne({
+        _id: taskId,
+    })
+    .populate('assignedTo') // Employee details
+    .populate('createdBy'); // Admin details
+
+    if (!task) {
+        throw new Error("Task not found");
+    }
+
+    return task;
+};
+exports.deleteTask = async (taskId) => {
+
+    const task = await Task.findById(taskId);
+
+    if (!task) {
+        throw new Error("Task not found");
+    }
+
+    await Task.findByIdAndDelete(taskId);
+
+    return {
+        success: true,
+        message: "Task deleted successfully"
+    };
 };

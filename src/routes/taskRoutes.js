@@ -22,5 +22,13 @@ router.put('/update/:id',
     auth,checkPermission("update_task"),
     controller.updateTask
 );
+router.get('/view/:id',
+    auth,checkPermission("view_task"),
+    controller.viewTask
+);
+router.get('/delete/:id',
+    auth,checkPermission("delete_task"),
+    controller.deleteTask
+);
 
 module.exports = router;

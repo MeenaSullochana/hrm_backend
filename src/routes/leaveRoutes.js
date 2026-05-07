@@ -7,7 +7,7 @@ const checkPermission = require("../middlewares/checkPermission");
 // apply
 router.post('/apply',
     auth,
-    checkPermission("apply_leave"), 
+    checkPermission("create_leave"), 
     controller.applyLeave
 );
 

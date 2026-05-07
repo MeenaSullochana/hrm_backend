@@ -1,6 +1,7 @@
 const SalaryStructure = require('../models/SalaryStructure');
 const Attendance = require('../models/attendance');
 const Payslip = require('../models/payslip');
+const User = require('../models/User');
 
 exports.generatePayslip = async (employeeId, month, year) => {
 
@@ -82,14 +83,53 @@ const penalty = Number(structure.penalty) || 0;
 };
 
 // 👉 employee payslips
+// exports.getEmployeePayslips = async (employeeId) => {
+//     return await Payslip.find({ employeeId })
+//         .sort({ year: -1, month: -1 });
+// };
+
 exports.getEmployeePayslips = async (employeeId) => {
-    return await Payslip.find({ employeeId })
-        .sort({ year: -1, month: -1 });
+
+    // Check user
+    const user = await User.findById(employeeId);
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    let payslip = [];
+
+    // Admin
+    if (user.type === 'admin') {
+
+        // Get users created by this admin
+        const users = await User.find({
+            createdBy: employeeId
+        }).select('_id');
+
+        // Extract user ids
+        const userIds = users.map(user => user._id);
+
+        // Fetch leave records
+        payslip = await Payslip.find({
+            employeeId: { $in: userIds }
+        }).sort({ createdAt: -1 });
+
+    } else {
+
+        // Normal user leaves
+        payslip = await Payslip.find({
+            employeeId: employeeId
+        }).sort({ createdAt: -1 });
+    }
+
+    return payslip;
 };
 
 // 👉 single payslip
 exports.getSinglePayslip = async (id) => {
-    return await Payslip.findById(id);
+    return await Payslip.findById(id).populate('employeeId'); // Employee details
+
 };
 
 // 👉 admin - all payslips
@@ -100,4 +140,11 @@ exports.getAllPayslips = async (companyId) => {
 };
 exports.getSalary = async (employeeId) => {
     return await SalaryStructure.findOne({ employeeId });
+};
+
+exports.deletePayslip = async (id, employeeId) => {
+    return await Payslip.findOneAndDelete({
+        _id: id,
+        employeeId
+    });
 };

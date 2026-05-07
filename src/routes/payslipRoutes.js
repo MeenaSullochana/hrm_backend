@@ -8,13 +8,14 @@ const checkPermission = require("../middlewares/checkPermission");
 router.post('/create',
     auth,
    checkPermission("create_payslip"),
-    controller.createPayslip
+    controller.createPayslip 
 );
 
 
 // 👤 employee
 router.get('/my',
     auth,
+   checkPermission("get_payslip"),
 
     controller.myPayslips
 );
@@ -25,8 +26,15 @@ router.get('/salarystructure',
 // 👤 employee single
 router.get('/view/:id',
     auth,
-   
+      checkPermission("view_payslip"),
+
     controller.getPayslip
+);
+
+router.delete('/delete/:id',
+    auth,
+   checkPermission("delete_payslip"), 
+    controller.deletePayslip
 );
 
 // 🧑‍💼 admin all

@@ -142,7 +142,7 @@ exports.getSalary = async (employeeId) => {
     return await SalaryStructure.findOne({ employeeId });
 };
 
-exports.deletePayslip = async (id, employeeId) => {
+exports.deletePayslip = async (id) => {
     return await Payslip.findOneAndDelete({
         _id: id
          });

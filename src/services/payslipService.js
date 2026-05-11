@@ -144,7 +144,6 @@ exports.getSalary = async (employeeId) => {
 
 exports.deletePayslip = async (id, employeeId) => {
     return await Payslip.findOneAndDelete({
-        _id: id,
-        employeeId
-    });
+        _id: id
+         });
 };

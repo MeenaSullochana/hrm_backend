@@ -72,6 +72,6 @@ try {
 
 
     exports.deletePayslip = async (req, res) => {
-        await payslipService.deletePayslip(req.params.id, req.user.id);
+        await payslipService.deletePayslip(req.params.id);
         res.json({ message: "Deleted" });
     };

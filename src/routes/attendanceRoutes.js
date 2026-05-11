@@ -22,10 +22,10 @@ router.get("/me", auth, checkStatus, controller.myAttendance);
 
 // ADMIN
 router.get(
-  "/company",
+  "/company/attendance",
   auth,
   checkStatus,
-  checkPermission("view_attendance"),
+  checkPermission("get_attendance"),
   controller.companyAttendance
 );
 

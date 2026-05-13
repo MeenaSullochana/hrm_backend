@@ -22,6 +22,8 @@ app.use("/api/task", require("./routes/taskRoutes"));
 app.use("/api/notification", require("./routes/notificationRoutes"));
 app.use("/api/leave", require("./routes/leaveRoutes"));
 app.use("/api/payslip", require("./routes/payslipRoutes"));
+app.use("/api/dashboard", require("./routes/dashboardRoutes"));
+
 
 module.exports = app;
 

@@ -85,3 +85,25 @@ exports.getnotassignCompanies = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+exports.getDashboard = async (req, res) => {
+  try {
+
+    const data = await service.getDashboard(
+      req.user
+    );
+
+    res.status(200).json({
+      status: true,
+      message: "Dashboard data fetched successfully",
+      data
+    });
+
+  } catch (err) {
+
+    res.status(500).json({
+      status: false,
+      message: err.message
+    });
+
+  }
+};

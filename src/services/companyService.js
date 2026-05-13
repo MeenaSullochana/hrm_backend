@@ -1,8 +1,9 @@
 const Company = require("../models/Company");
 const User = require("../models/User");
 const Leave = require("../models/Leave");
-const Attendance = require("../models/Attendance");
-const Payslip = require("../models/Payslip");
+const Attendance = require('../models/attendance');
+const Payslip = require('../models/payslip');
+
 const Task = require("../models/Task");
 
 

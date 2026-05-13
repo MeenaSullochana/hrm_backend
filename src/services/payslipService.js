@@ -111,17 +111,43 @@ exports.getEmployeePayslips = async (employeeId) => {
         const userIds = users.map(user => user._id);
 
         // Fetch leave records
+        // payslip = await Payslip.find({
+        //     employeeId: { $in: userIds }
+        // }).populate('employeeId')
+        // .sort({ createdAt: -1 });
         payslip = await Payslip.find({
-            employeeId: { $in: userIds }
-        }).populate('employeeId')
-        .sort({ createdAt: -1 });
+    employeeId: { $in: userIds }
+})
+.populate({
+    path: "employeeId",
+    populate: [
+        {
+            path: "companyId"
+        },
+        {
+            path: "roles"
+        }
+    ]
+})
+.sort({ createdAt: -1 });
 
     } else {
 
         // Normal user leaves
         payslip = await Payslip.find({
             employeeId: employeeId
-        }).populate('employeeId').sort({ createdAt: -1 });
+        }).populate({
+    path: "employeeId",
+    populate: [
+        {
+            path: "companyId"
+        },
+        {
+            path: "roles"
+        }
+    ]
+})
+.sort({ createdAt: -1 });
     }
 
     return payslip;

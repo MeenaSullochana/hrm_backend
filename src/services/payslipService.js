@@ -155,7 +155,18 @@ exports.getEmployeePayslips = async (employeeId) => {
 
 // 👉 single payslip
 exports.getSinglePayslip = async (id) => {
-    return await Payslip.findById(id).populate('employeeId'); // Employee details
+    return await Payslip.findById(id).populate({
+    path: "employeeId",
+    populate: [
+        {
+            path: "companyId"
+        },
+        {
+            path: "roles"
+        }
+    ]
+})
+.sort({ createdAt: -1 }); // Employee details
 
 };
 

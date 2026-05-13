@@ -2,13 +2,13 @@
 // DASHBOARD ROUTE
 // ===============================
 
-const express = require("express");
-const router = express.Router();
-const checkPermission = require("../middlewares/checkPermission");
+
+
+const router = require("express").Router();
+const auth  = require("../middlewares/authCheck");
 
 const dashboardController = require("../controllers/companyController");
-
-const auth = require("../middleware/auth");
+const checkPermission = require("../middlewares/checkPermission");
 
 // GET DASHBOARD
 router.get(

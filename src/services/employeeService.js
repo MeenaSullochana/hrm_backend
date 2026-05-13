@@ -45,15 +45,52 @@ exports.createEmployee = async (data, loggedUser) => {
 
 
 // GET ALL EMPLOYEES
+// exports.getEmployees = async (user) => {
+//     return await User.find({
+//       companyId: user.companyId,
+//       type: "employee",
+//       status: true          // 🔥 ONLY ACTIVE
+//     }).populate("companyId")
+//   .populate("roles");
+//   };
+
+
+// GET ALL EMPLOYEES
 exports.getEmployees = async (user) => {
-    return await User.find({
-      companyId: user.companyId,
-      type: "employee",
-      status: true          // 🔥 ONLY ACTIVE
-    }).populate("roles");
-  };
 
+  // get employees
+  const employees = await User.find({
+    companyId: user.companyId,
+    type: "employee",
+    status: true
+  })
+    .populate("companyId")
+    .populate("roles")
+    .lean();
 
+  // get employee ids
+  const employeeIds = employees.map(emp => emp._id);
+
+  // get salary structures
+  const salaryStructures = await SalaryStructure.find({
+    employeeId: { $in: employeeIds }
+  }).lean();
+
+  // merge salary with employee
+  const result = employees.map(emp => {
+
+    const salary = salaryStructures.find(
+      sal => sal.employeeId.toString() === emp._id.toString()
+    );
+
+    return {
+      ...emp,
+      salaryStructure: salary || null
+    };
+  });
+
+  return result;
+};
 // GET SINGLE EMPLOYEE
 exports.getEmployeeById = async (id, loggedUser) => {
   return await User.findOne({
@@ -64,23 +101,111 @@ exports.getEmployeeById = async (id, loggedUser) => {
 
 
 // UPDATE EMPLOYEE
+// exports.updateEmployee = async (id, data, loggedUser) => {
+
+//     const updateData = { ...data };
+
+//     if (data.password) {
+//         updateData.password = await bcrypt.hash(data.password, 10);
+//     } else {
+//         delete updateData.password;
+//     }
+
+//     return await User.findOneAndUpdate(
+//         { _id: id, companyId: loggedUser.companyId },
+//         updateData,
+//         { new: true }
+//     );
+// };
 exports.updateEmployee = async (id, data, loggedUser) => {
 
-    const updateData = { ...data };
+  const employee = await User.findOne({
+    _id: id,
+    companyId: loggedUser.companyId,
+    type: "employee"
+  });
 
-    if (data.password) {
-        updateData.password = await bcrypt.hash(data.password, 10);
-    } else {
-        delete updateData.password;
+  if (!employee) {
+    throw new Error("Employee not found");
+  }
+
+  // =========================
+  // EMPLOYEE UPDATE
+  // =========================
+  if (loggedUser.type === "employee") {
+
+    // employee can update only own details
+    if (employee._id.toString() !== loggedUser._id.toString()) {
+      throw new Error("You can update only your profile");
     }
 
-    return await User.findOneAndUpdate(
-        { _id: id, companyId: loggedUser.companyId },
-        updateData,
-        { new: true }
-    );
-};
+    const updateData = {
+      name: data.name || employee.name,
+      email: data.email || employee.email
+    };
 
+    // password update
+    if (data.password) {
+      updateData.password = await bcrypt.hash(data.password, 10);
+    }
+
+    await User.findByIdAndUpdate(id, updateData, { new: true });
+
+  }
+
+  // =========================
+  // ADMIN UPDATE
+  // =========================
+  else {
+
+    const updateData = {
+      name: data.name || employee.name,
+      email: data.email || employee.email,
+      roles: data.roles || employee.roles,
+      status:
+        data.status !== undefined
+          ? data.status
+          : employee.status
+    };
+
+    // password update
+    if (data.password) {
+      updateData.password = await bcrypt.hash(data.password, 10);
+    }
+
+    // update employee
+    await User.findByIdAndUpdate(id, updateData, { new: true });
+
+    // update salary structure
+    await SalaryStructure.findOneAndUpdate(
+      { employeeId: id },
+      {
+        basic: data.basic || 0,
+        hra: data.hra || 0,
+        allowance: data.allowance || 0,
+        pf: data.pf || 0,
+        tax: data.tax || 0,
+        bonus: data.bonus || 0,
+        penalty: data.penalty || 0
+      },
+      { new: true, upsert: true }
+    );
+  }
+
+  // return updated employee with salary
+  const updatedEmployee = await User.findById(id)
+    .populate("companyId")
+    .populate("roles")
+    .lean();
+
+  const salary = await SalaryStructure.findOne({
+    employeeId: id
+  });
+
+  updatedEmployee.salaryStructure = salary;
+
+  return updatedEmployee;
+};
 
 // DELETE EMPLOYEE
 exports.deleteEmployee = async (id, loggedUser) => {

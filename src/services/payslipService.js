@@ -113,7 +113,7 @@ exports.getEmployeePayslips = async (employeeId) => {
         // Fetch leave records
         payslip = await Payslip.find({
             employeeId: { $in: userIds }
-        }).populate('employeeId', 'name email employeeCode')
+        }).populate('employeeId')
         .sort({ createdAt: -1 });
 
     } else {
@@ -121,7 +121,7 @@ exports.getEmployeePayslips = async (employeeId) => {
         // Normal user leaves
         payslip = await Payslip.find({
             employeeId: employeeId
-        }).populate('employeeId', 'name email employeeCode').sort({ createdAt: -1 });
+        }).populate('employeeId').sort({ createdAt: -1 });
     }
 
     return payslip;

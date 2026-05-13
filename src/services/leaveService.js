@@ -37,14 +37,14 @@ exports.getMyLeaves = async (employeeId) => {
         // Fetch leave records
         leaves = await Leave.find({
             employeeId: { $in: userIds }
-        }).sort({ createdAt: -1 });
+        }).populate('employeeId').sort({ createdAt: -1 });
 
     } else {
 
         // Normal user leaves
         leaves = await Leave.find({
             employeeId: employeeId
-        }).sort({ createdAt: -1 });
+        }).populate('employeeId').sort({ createdAt: -1 });
     }
 
     return leaves;

@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
 
 const payslipSchema = new mongoose.Schema({
-    employeeId: mongoose.Schema.Types.ObjectId,
-    month: Number,
+ employeeId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+        month: Number,
     year: Number,
 
     presentDays: Number,

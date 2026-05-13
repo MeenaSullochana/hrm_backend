@@ -92,13 +92,37 @@ exports.getEmployees = async (user) => {
   return result;
 };
 // GET SINGLE EMPLOYEE
+// exports.getEmployeeById = async (id, loggedUser) => {
+//   return await User.findOne({
+//     _id: id,
+//     companyId: loggedUser.companyId
+//   }).populate("roles");
+// };
 exports.getEmployeeById = async (id, loggedUser) => {
-  return await User.findOne({
+
+  // get employee
+  const employee = await User.findOne({
     _id: id,
     companyId: loggedUser.companyId
-  }).populate("roles");
-};
+  })
+    .populate("roles")
+    .populate("companyId")
+    .lean();
 
+  if (!employee) {
+    throw new Error("Employee not found");
+  }
+
+  // get salary structure
+  const salaryStructure = await SalaryStructure.findOne({
+    employeeId: employee._id
+  }).lean();
+
+  // attach salary structure
+  employee.salaryStructure = salaryStructure || null;
+
+  return employee;
+};
 
 // UPDATE EMPLOYEE
 // exports.updateEmployee = async (id, data, loggedUser) => {

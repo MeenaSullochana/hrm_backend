@@ -12,7 +12,7 @@ const auth = require("../middleware/auth");
 
 // GET DASHBOARD
 router.get(
-  "/",
+  "/details",
   auth,checkPermission("get_dashboard"),
   dashboardController.getDashboard
 );

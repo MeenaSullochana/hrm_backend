@@ -30,6 +30,7 @@ exports.registerAdmin = async (req, res) => {
 exports.updateAdmin = async (req, res) => {
   try {
     const result = await authService.updateAdmin(
+      req.user,
       req.params.id,
       req.body
     );

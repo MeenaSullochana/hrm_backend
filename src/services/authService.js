@@ -108,41 +108,173 @@ exports.login = async (data) => {
   
     return { user, token };
   };
+exports.updateAdmin = async (employeeId, id, data) => {
 
+  // logged user
+  const user = await User.findById(employeeId);
 
-  exports.updateAdmin = async (id, data) => { 
-     const { name, email, password, companyId, roles, status } = data;  
-     const existingUser = await User.findById(id); 
-      if (!existingUser) {   
-         throw new Error("Admin not found");  
-        }  // Email duplicate check 
-             if (email && email !== existingUser.email) {    
-          const emailCheck = await User.findOne({    
-              email,      _id: { $ne: id }    });    
-              if (emailCheck) {      
-                throw new Error("Email already exists");   
-               }  }   
-                if (    companyId &&    companyId !== existingUser.companyId?.toString()  )
-                   {       
-                    await Company.findByIdAndUpdate(existingUser.companyId, {     
-                       admin: false   
-                       });   
-                          const company = await Company.findOne({  
-                                _id: companyId,      status: true    });
-                                    if (!company) {  
-                                          throw new Error("Selected company inactive");  
-                                          }   
-                                           await Company.findByIdAndUpdate(companyId, {    
-                                              admin: true,  
-                                                    });  }  
-                    let updateData = {    name,    email,    companyId,    roles,    status  };
-                      // If inactive 
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  // existing admin
+  const existingUser = await User.findById(id);
+
+  if (!existingUser) {
+    throw new Error("Admin not found");
+  }
+
+  // ======================================
+  // EMAIL DUPLICATE CHECK
+  // ======================================
+
+  if (data.email && data.email !== existingUser.email) {
+
+    const emailCheck = await User.findOne({
+      email: data.email,
+      _id: { $ne: id }
+    });
+
+    if (emailCheck) {
+      throw new Error("Email already exists");
+    }
+  }
+
+  // ======================================
+  // ADMIN UPDATE
+  // only name, email, password
+  // ======================================
+
+  if (user.type === "admin") {
+
+    let updateData = {
+      name: data.name || existingUser.name,
+      email: data.email || existingUser.email
+    };
+
+    // password update
+    if (data.password) {
+      updateData.password = await bcrypt.hash(data.password, 10);
+    }
+
+    const updated = await User.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true }
+    );
+
+    return updated;
+  }
+
+  // ======================================
+  // SUPER ADMIN UPDATE
+  // full access
+  // ======================================
+
+  if (user.type === "super-admin") {
+
+    const {
+      name,
+      email,
+      phone,
+      password,
+      companyId,
+      roles,
+      status
+    } = data;
+
+    // company change
+    if (
+      companyId &&
+      companyId !== existingUser.companyId?.toString()
+    ) {
+
+      // remove old company admin
+      await Company.findByIdAndUpdate(
+        existingUser.companyId,
+        { admin: false }
+      );
+
+      // check new company
+      const company = await Company.findOne({
+        _id: companyId,
+        status: true
+      });
+
+      if (!company) {
+        throw new Error("Selected company inactive");
+      }
+
+      // set new company admin
+      await Company.findByIdAndUpdate(
+        companyId,
+        { admin: true }
+      );
+    }
+
+    let updateData = {
+      name,
+      email,
+      phone,
+      companyId,
+      roles,
+      status
+    };
+
+    // password update
+    if (password) {
+      updateData.password = await bcrypt.hash(password, 10);
+    }
+
+    const updated = await User.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true }
+    );
+
+    return updated;
+  }
+
+  throw new Error("Unauthorized access");
+};
+
+  // exports.updateAdmin = async (employeeId,id, data) => { 
+  //       const auser = await User.findById(employeeId);
+  //    if (!auser) {
+  //       throw new Error("User not found");
+  //   }
+  //    const { name, email,phone, password, companyId, roles, status } = data;  
+  //    const existingUser = await User.findById(id); 
+  //     if (!existingUser) {   
+  //        throw new Error("Admin not found");  
+  //       }  // Email duplicate check 
+  //            if (email && email !== existingUser.email) {    
+  //         const emailCheck = await User.findOne({    
+  //             email,      _id: { $ne: id }    });    
+  //             if (emailCheck) {      
+  //               throw new Error("Email already exists");   
+  //              }  }   
+  //               if (    companyId &&    companyId !== existingUser.companyId?.toString()  )
+  //                  {       
+  //                   await Company.findByIdAndUpdate(existingUser.companyId, {     
+  //                      admin: false   
+  //                      });   
+  //                         const company = await Company.findOne({  
+  //                               _id: companyId,      status: true    });
+  //                                   if (!company) {  
+  //                                         throw new Error("Selected company inactive");  
+  //                                         }   
+  //                                          await Company.findByIdAndUpdate(companyId, {    
+  //                                             admin: true,  
+  //                                                   });  }  
+  //                   let updateData = {    name,    email,    companyId,    roles,    status  };
+  //                     // If inactive 
                   
-                          if (password) { 
-                               updateData.password = await bcrypt.hash(password, 10);
-                                } 
-                          const updated = await User.findByIdAndUpdate(
-                                id,    updateData,    
-                                { new: true }  );  
-                                return updated;
-                              };
+  //                         if (password) { 
+  //                              updateData.password = await bcrypt.hash(password, 10);
+  //                               } 
+  //                         const updated = await User.findByIdAndUpdate(
+  //                               id,    updateData,    
+  //                               { new: true }  );  
+  //                               return updated;
+  //                             };

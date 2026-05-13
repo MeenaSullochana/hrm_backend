@@ -116,7 +116,7 @@ exports.login = async (data) => {
       if (!existingUser) {   
          throw new Error("Admin not found");  
         }  // Email duplicate check 
-         if (email && email !== existingUser.email) {    
+             if (email && email !== existingUser.email) {    
           const emailCheck = await User.findOne({    
               email,      _id: { $ne: id }    });    
               if (emailCheck) {      

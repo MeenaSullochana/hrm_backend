@@ -176,7 +176,6 @@ exports.updateAdmin = async (employeeId, id, data) => {
     const {
       name,
       email,
-      phone,
       password,
       companyId,
       roles,
@@ -215,7 +214,6 @@ exports.updateAdmin = async (employeeId, id, data) => {
     let updateData = {
       name,
       email,
-      phone,
       companyId,
       roles,
       status

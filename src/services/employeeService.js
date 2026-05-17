@@ -5,11 +5,12 @@ const SalaryStructure = require('../models/SalaryStructure');
 
 exports.createEmployee = async (data, loggedUser) => {
 
-  const { name, email, password, roles } = data;
+  const { name, email,phoneNumber, password, roles } = data;
 
   const exist = await User.findOne({ email });
   if (exist) throw new Error("Email already exists");
-
+ const existp = await User.findOne({ phoneNumber });
+  if (existp) throw new Error("PhoneNumber already exists");
   const hash = await bcrypt.hash(password, 10);
 
   // 🔥 use generator
@@ -18,6 +19,7 @@ exports.createEmployee = async (data, loggedUser) => {
   const employee  = await User.create({
     name,
     email,
+    phoneNumber,
     password: hash,
     roles,
     employeeCode,
@@ -165,7 +167,10 @@ exports.updateEmployee = async (id, data, loggedUser) => {
 
     const updateData = {
       name: data.name || employee.name,
-      email: data.email || employee.email
+      email: data.email || employee.email,
+            phoneNumber: data.phoneNumber || employee.phoneNumber
+
+      
     };
 
     // password update
@@ -185,6 +190,8 @@ exports.updateEmployee = async (id, data, loggedUser) => {
     const updateData = {
       name: data.name || employee.name,
       email: data.email || employee.email,
+                  phoneNumber: data.phoneNumber || employee.phoneNumber,
+
       roles: data.roles || employee.roles,
       status:
         data.status !== undefined
